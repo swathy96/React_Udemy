@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Loading from "./Loading";
 
 class App extends Component {
   constructor(props){
@@ -7,8 +8,9 @@ class App extends Component {
   
     this.state = {
       users : [],
-      loading: true
+      loading: false
     }
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   obtainUserDetails(){
@@ -17,6 +19,15 @@ class App extends Component {
       users: response.data.results,
       loading: false
     }))
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    this.setState({
+      loading: true,
+      users: []
+    })
+    this.obtainUserDetails();
   }
 
   componentWillMount(){
@@ -31,7 +42,8 @@ class App extends Component {
     }
     return (
       <div className="App">
-       {this.state.loading ? 'Loading': <table style={tableBorder}>
+        <button onClick={this.handleSubmit}> Load users</button>
+       {this.state.loading ? <Loading/>: <table style={tableBorder}>
           <tr>
             <th> Name</th>
             <th>Email</th>
