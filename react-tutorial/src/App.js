@@ -8,7 +8,7 @@ class App extends Component {
   
     this.state = {
       users : [],
-      loading: false
+      loading: true
     }
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -16,7 +16,7 @@ class App extends Component {
   obtainUserDetails(){
     axios('https://api.randomuser.me/?nat=US&results=5')
     .then(response => this.setState({
-      users: response.data.results,
+      users: [...this.state.users, ...response.data.results],
       loading: false
     }))
   }
@@ -25,7 +25,6 @@ class App extends Component {
     e.preventDefault();
     this.setState({
       loading: true,
-      users: []
     })
     this.obtainUserDetails();
   }
@@ -40,10 +39,11 @@ class App extends Component {
     const tableBorder = {
       border: "2px solid forestgreen"
     }
+    const {users, loading} = this.state;
     return (
       <div className="App">
         <button onClick={this.handleSubmit}> Load users</button>
-       {this.state.loading ? <Loading/>: <table style={tableBorder}>
+       {loading ? <Loading/>: <table style={tableBorder}>
           <tr>
             <th> Name</th>
             <th>Email</th>
@@ -51,7 +51,7 @@ class App extends Component {
             <th>Gender</th>
           </tr>
         
-            {this.state.users.map(user=>{
+            {users.map(user=>{
               return (<tr key = {user.id.value}>
                 <td> {user.name.title+"."+user.name.first+" "+user.name.last}</td>
                 <td>{user.email}</td>
