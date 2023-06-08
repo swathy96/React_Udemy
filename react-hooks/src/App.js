@@ -5,8 +5,9 @@ const App = ()=>{
 
   const [searchTerm, setSearchTerm] = useState('react')
 
+  const [url,setUrl] = useState('https://hn.algolia.com/api/v1/search?query=react')
   const fetchNews = ()=>{
-    fetch(`https://hn.algolia.com/api/v1/search?query=${searchTerm}`)
+    fetch(url)
     .then( result => result.json())
     .then(data => setNews(data.hits))
     .catch(error => console.log(error))
@@ -14,16 +15,21 @@ const App = ()=>{
 
   useEffect(()=>{
     fetchNews();
-  },[searchTerm])
+  },[url])
 
   const handleChange = (e) =>{
     setSearchTerm(e.target.value)
   }
 
+  const handleSubmit = (e) =>{
+    e.preventDefault()
+    setUrl(`https://hn.algolia.com/api/v1/search?query=${searchTerm}`)
+  }
+
   return(
     <div>
       <h2>News</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input type="search"  value={searchTerm} onChange={handleChange}/>
         <button>Search</button>
       </form>
